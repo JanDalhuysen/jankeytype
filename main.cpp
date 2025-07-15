@@ -140,40 +140,52 @@ int main()
                 index++;
             }
 
-            for (int i = 0; i < 28; i++) // letters.size(); i++)
-            {
-                // DrawText(letters[i].c_str(), 100 + i * 20, 400, 32, letter_colors[i]);
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + i * 20.0f, 100.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+            float x = 100.0f;
+            float y = 100.0f;
+            float line_height = (float)fontTtf.baseSize + 10;
 
-            for (int i = 28; i < 56; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 28) * 20.0f, 150.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+            for (int i = 0; i < letters.size(); ) {
+                // Find the end of the current word
+                int word_end = i;
+                while (word_end < letters.size() && letters[word_end] != " " && letters[word_end] != "\n") {
+                    word_end++;
+                }
 
-            for (int i = 56; i < 84; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 56) * 20.0f, 200.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+                // Get the word as a string
+                std::string word = "";
+                for (int k = i; k < word_end; k++) {
+                    word += letters[k];
+                }
 
-            for (int i = 84; i < 112; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 84) * 20.0f, 250.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+                // Measure the word
+                Vector2 word_size = MeasureTextEx(fontTtf, word.c_str(), (float)fontTtf.baseSize, 2);
 
-            for (int i = 112; i < 140; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 112) * 20.0f, 300.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+                // Check if the word fits on the current line
+                if (x + word_size.x > window_width - 100) {
+                    x = 100.0f;
+                    y += line_height;
+                }
 
-            for (int i = 140; i < 168; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 140) * 20.0f, 350.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
-            }
+                // Draw the word character by character
+                for (int k = i; k < word_end; k++) {
+                    DrawTextEx(fontTtf, letters[k].c_str(), (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[k]);
+                    x += MeasureTextEx(fontTtf, letters[k].c_str(), (float)fontTtf.baseSize, 2).x;
+                }
 
-            for (int i = 168; i < 196; i++)
-            {
-                DrawTextEx(fontTtf, letters[i].c_str(), (Vector2){100 + (i - 168) * 20.0f, 400.0f}, (float)fontTtf.baseSize, 2, letter_colors[i]);
+                // Move to the next word
+                i = word_end;
+
+                // Handle spaces and newlines
+                if (i < letters.size()) {
+                    if (letters[i] == "\n") {
+                        x = 100.0f;
+                        y += line_height;
+                    } else if (letters[i] == " ") {
+                        DrawTextEx(fontTtf, " ", (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[i]);
+                        x += MeasureTextEx(fontTtf, " ", (float)fontTtf.baseSize, 2).x;
+                    }
+                    i++;
+                }
             }
 
             // DrawTextEx(fontTtf, msg, (Vector2){20.0f, 100.0f}, (float)fontTtf.baseSize, 2, LIME);

@@ -111,49 +111,61 @@ int main()
 
             int key = GetKeyPressed();
 
-            if (key != 0 and key != 257)
+            if (key != 0 && key != 257)
             {
                 first_key_press = true;
 
-                int letter_key = (int)toupper(letters[index][0]);
-
-                if (key == letter_key)
+                // Handle backspace
+                if (key == KEY_BACKSPACE && index > 0)
                 {
-                    letter_colors[index] = GREEN;
-
-                    int randValue = GetRandomValue(1, 4);
-
-                    if (randValue == 1)
-                        PlaySound(key_press_1);
-                    else if (randValue == 2)
-                        PlaySound(key_press_2);
-                    else if (randValue == 3)
-                        PlaySound(key_press_3);
-                    else if (randValue == 4)
-                        PlaySound(key_press_4);
+                    index--;
+                    letter_colors[index] = WHITE;
                 }
                 else
                 {
-                    letter_colors[index] = RED;
-                    PlaySound(key_wrong);
+                    int letter_key = (int)toupper(letters[index][0]);
+
+                    if (key == letter_key)
+                    {
+                        letter_colors[index] = GREEN;
+
+                        int randValue = GetRandomValue(1, 4);
+
+                        if (randValue == 1)
+                            PlaySound(key_press_1);
+                        else if (randValue == 2)
+                            PlaySound(key_press_2);
+                        else if (randValue == 3)
+                            PlaySound(key_press_3);
+                        else if (randValue == 4)
+                            PlaySound(key_press_4);
+                    }
+                    else
+                    {
+                        letter_colors[index] = RED;
+                        PlaySound(key_wrong);
+                    }
+                    index++;
                 }
-                index++;
             }
 
             float x = 100.0f;
             float y = 100.0f;
             float line_height = (float)fontTtf.baseSize + 10;
 
-            for (int i = 0; i < letters.size(); ) {
+            for (int i = 0; i < letters.size();)
+            {
                 // Find the end of the current word
                 int word_end = i;
-                while (word_end < letters.size() && letters[word_end] != " " && letters[word_end] != "\n") {
+                while (word_end < letters.size() && letters[word_end] != " " && letters[word_end] != "\n")
+                {
                     word_end++;
                 }
 
                 // Get the word as a string
                 std::string word = "";
-                for (int k = i; k < word_end; k++) {
+                for (int k = i; k < word_end; k++)
+                {
                     word += letters[k];
                 }
 
@@ -161,13 +173,15 @@ int main()
                 Vector2 word_size = MeasureTextEx(fontTtf, word.c_str(), (float)fontTtf.baseSize, 2);
 
                 // Check if the word fits on the current line
-                if (x + word_size.x > window_width - 100) {
+                if (x + word_size.x > window_width - 100)
+                {
                     x = 100.0f;
                     y += line_height;
                 }
 
                 // Draw the word character by character
-                for (int k = i; k < word_end; k++) {
+                for (int k = i; k < word_end; k++)
+                {
                     DrawTextEx(fontTtf, letters[k].c_str(), (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[k]);
                     x += MeasureTextEx(fontTtf, letters[k].c_str(), (float)fontTtf.baseSize, 2).x;
                 }
@@ -176,11 +190,15 @@ int main()
                 i = word_end;
 
                 // Handle spaces and newlines
-                if (i < letters.size()) {
-                    if (letters[i] == "\n") {
+                if (i < letters.size())
+                {
+                    if (letters[i] == "\n")
+                    {
                         x = 100.0f;
                         y += line_height;
-                    } else if (letters[i] == " ") {
+                    }
+                    else if (letters[i] == " ")
+                    {
                         DrawTextEx(fontTtf, " ", (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[i]);
                         x += MeasureTextEx(fontTtf, " ", (float)fontTtf.baseSize, 2).x;
                     }
@@ -207,6 +225,24 @@ int main()
                     float wpm = (float)num_words / (elapsed_time / 60.0f);
                     DrawText(TextFormat("WPM: %.2f s", wpm), 400 - 150, 30, 20, WHITE);
                 }
+            }
+
+            // Draw the WPM when all letters are green
+            bool all_green = true;
+            for (int i = 0; i < letters.size(); i++)
+            {
+                if (!ColorsEqual(letter_colors[i], GREEN))
+                {
+                    all_green = false;
+                    break;
+                }
+            }
+
+            if (all_green)
+            {
+                first_key_press = false;
+                float wpm = (float)num_words / (elapsed_time / 60.0f);
+                DrawText(TextFormat("WPM: %.2f", wpm), 400 - 150, 30, 20, WHITE);
             }
 
             ClearBackground((Color){30, 30, 30, UINT8_MAX});

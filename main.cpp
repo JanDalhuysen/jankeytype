@@ -50,17 +50,41 @@ int main()
     // std::string text = "hallo world my naam is";
     // std::string text = "the quick brown fox jumps";
 
-    // load text from file
-    std::string text = "";
-    FILE *file = fopen("text.txt", "r");
+    // Load words from file into a vector
+    std::vector<std::string> all_words;
+    FILE *file = fopen("kids3letterwords.txt", "r");
     if (file)
     {
         char buffer[256];
         while (fgets(buffer, sizeof(buffer), file))
         {
-            text += buffer;
+            char *token = strtok(buffer, " \n");
+            while (token)
+            {
+                all_words.push_back(token);
+                token = strtok(NULL, " \n");
+            }
         }
         fclose(file);
+    }
+
+    // Pick 30 random words
+    std::vector<std::string> chosen_words;
+    srand((unsigned int)time(NULL));
+    for (int i = 0; i < 30 && !all_words.empty(); i++)
+    {
+        int idx = rand() % all_words.size();
+        chosen_words.push_back(all_words[idx]);
+        all_words.erase(all_words.begin() + idx);
+    }
+
+    // Build the text string from chosen words
+    std::string text = "";
+    for (int i = 0; i < chosen_words.size(); i++)
+    {
+        text += chosen_words[i];
+        if (i < chosen_words.size() - 1)
+            text += " ";
     }
 
     // split string into vector of strings

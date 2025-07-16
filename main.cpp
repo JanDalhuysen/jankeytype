@@ -19,7 +19,7 @@ bool ColorsEqual(Color a, Color b)
     return (a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a);
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     const int window_height = 800;
     const int window_width = 800;
@@ -52,7 +52,14 @@ int main()
 
     // Load words from file into a vector
     std::vector<std::string> all_words;
-    FILE *file = fopen("kids3letterwords.txt", "r");
+    // Use command line argument for filename
+    const char *filename = "200.txt";
+    if (argc > 1 && argv[1] != nullptr)
+    {
+        filename = argv[1];
+    }
+
+    FILE *file = fopen(filename, "r");
     if (file)
     {
         char buffer[256];

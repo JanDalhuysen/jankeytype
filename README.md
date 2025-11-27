@@ -1,4 +1,7 @@
-# JankeyType
+# jankeytype
+
+<img width="791" height="790" alt="image" src="https://github.com/user-attachments/assets/3e798f31-803b-47bb-a4eb-300dcc571082" />
+
 
 A typing speed test game made with raylib.
 
@@ -18,14 +21,16 @@ A typing speed test game made with raylib.
 ## Installation
 
 1. Install raylib: `vcpkg install raylib`
-2. Generate build files: `cmake . -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=C:/Apps/vcpkg/scripts/buildsystems/vcpkg.cmake`
+2. Generate build files:
+```
+cmake . -G "MinGW Makefiles" -DCMAKE_TOOLCHAIN_FILE=C:/Apps/vcpkg/scripts/buildsystems/vcpkg.cmake
+```
 3. Build: `mingw32-make`
 
 ## Usage
 
-1. Place your typing test text in `text.txt`
-2. Put your desired font in `CaskaydiaCoveNerdFont-Regular.ttf`
-3. Run `jankeytype.exe`
+1. Run `jankeytype` with no arguments for random easy words
+2. Run `jankeytype -l my_paragraph.txt` to type specific text 
 
 ## Sound Files
 

@@ -50,48 +50,74 @@ int main(int argc, char *argv[])
     // std::string text = "hallo world my naam is";
     // std::string text = "the quick brown fox jumps";
 
-    // Load words from file into a vector
-    std::vector<std::string> all_words;
     // Use command line argument for filename
     const char *filename = "200.txt";
-    if (argc > 1 && argv[1] != nullptr)
-    {
-        filename = argv[1];
-    }
+    bool literal_mode = false;
 
-    FILE *file = fopen(filename, "r");
-    if (file)
+    for (int i = 1; i < argc; i++)
     {
-        char buffer[256];
-        while (fgets(buffer, sizeof(buffer), file))
+        if (strcmp(argv[i], "-l") == 0)
         {
-            char *token = strtok(buffer, " \n");
-            while (token)
-            {
-                all_words.push_back(token);
-                token = strtok(NULL, " \n");
-            }
+            literal_mode = true;
         }
-        fclose(file);
+        else
+        {
+            filename = argv[i];
+        }
     }
 
-    // Pick 30 random words
-    std::vector<std::string> chosen_words;
-    srand((unsigned int)time(NULL));
-    for (int i = 0; i < 30 && !all_words.empty(); i++)
-    {
-        int idx = rand() % all_words.size();
-        chosen_words.push_back(all_words[idx]);
-        all_words.erase(all_words.begin() + idx);
-    }
-
-    // Build the text string from chosen words
     std::string text = "";
-    for (int i = 0; i < chosen_words.size(); i++)
+
+    if (literal_mode)
     {
-        text += chosen_words[i];
-        if (i < chosen_words.size() - 1)
-            text += " ";
+        FILE *file = fopen(filename, "r");
+        if (file)
+        {
+            char buffer[1024];
+            while (fgets(buffer, sizeof(buffer), file))
+            {
+                text += buffer;
+            }
+            fclose(file);
+        }
+    }
+    else
+    {
+        // Load words from file into a vector
+        std::vector<std::string> all_words;
+        FILE *file = fopen(filename, "r");
+        if (file)
+        {
+            char buffer[256];
+            while (fgets(buffer, sizeof(buffer), file))
+            {
+                char *token = strtok(buffer, " \n");
+                while (token)
+                {
+                    all_words.push_back(token);
+                    token = strtok(NULL, " \n");
+                }
+            }
+            fclose(file);
+        }
+
+        // Pick 30 random words
+        std::vector<std::string> chosen_words;
+        srand((unsigned int)time(NULL));
+        for (int i = 0; i < 30 && !all_words.empty(); i++)
+        {
+            int idx = rand() % all_words.size();
+            chosen_words.push_back(all_words[idx]);
+            all_words.erase(all_words.begin() + idx);
+        }
+
+        // Build the text string from chosen words
+        for (int i = 0; i < chosen_words.size(); i++)
+        {
+            text += chosen_words[i];
+            if (i < chosen_words.size() - 1)
+                text += " ";
+        }
     }
 
     // split string into vector of strings

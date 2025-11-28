@@ -3,15 +3,15 @@
 
 #include <algorithm>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 #include <raylib.h>
 #include <raymath.h>
 
-#include <time.h>
 #include <string.h>
+#include <time.h>
 
 // Function to compare two Color objects
 bool ColorsEqual(Color a, Color b)
@@ -40,7 +40,8 @@ int main(int argc, char *argv[])
 
     // DisableCursor();
 
-    // const char msg[256] = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHI\nJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmn\nopqrstuvwxyz{|}~¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓ\nÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷\nøùúûüýþÿ";
+    // const char msg[256] =
+    // "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHI\nJKLMNOPQRSTUVWXYZ[]^_`abcdefghijklmn\nopqrstuvwxyz{|}~¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓ\nÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷\nøùúûüýþÿ";
 
     // CaskaydiaCoveNerdFont-Regular.ttf
     Font fontTtf = LoadFont("CaskaydiaCoveNerdFont-Regular.ttf");
@@ -239,7 +240,8 @@ int main(int argc, char *argv[])
                 // Draw the word character by character
                 for (int k = i; k < word_end; k++)
                 {
-                    DrawTextEx(fontTtf, letters[k].c_str(), (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[k]);
+                    DrawTextEx(fontTtf, letters[k].c_str(), (Vector2){x, y}, (float)fontTtf.baseSize, 2,
+                               letter_colors[k]);
                     x += MeasureTextEx(fontTtf, letters[k].c_str(), (float)fontTtf.baseSize, 2).x;
                 }
 

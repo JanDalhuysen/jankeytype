@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     const int window_height = 800;
     const int window_width = 800;
 
-    InitWindow(window_width, window_height, "JankeyType");
+    InitWindow(window_width, window_height, "jankeytype");
 
     SetTargetFPS(120);
 
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
         // Pick 30 random words
         std::vector<std::string> chosen_words;
         srand((unsigned int)time(NULL));
-        for (int i = 0; i < 30 && !all_words.empty(); i++)
+        for (int i = 0; i < 10 && !all_words.empty(); i++)
         {
             int idx = rand() % all_words.size();
             chosen_words.push_back(all_words[idx]);
@@ -137,6 +137,8 @@ int main(int argc, char *argv[])
 
     float elapsed_time = 0.0f;
     bool first_key_press = false;
+    int mistakes = 0;
+    int total_keypresses = 0;
 
     int index = 0;
     while (!WindowShouldClose())
@@ -161,6 +163,8 @@ int main(int argc, char *argv[])
                 elapsed_time = 0.0f;
                 first_key_press = false;
                 index = 0;
+                mistakes = 0;
+                total_keypresses = 0;
                 for (int i = 0; i < letters.size(); i++)
                 {
                     letter_colors[i] = WHITE;
@@ -169,7 +173,9 @@ int main(int argc, char *argv[])
 
             int key = GetKeyPressed();
 
-            if (key != 0 && key != 257)
+            // Ignore modifier keys (Shift, Control, Alt, Super, etc.)
+            // Raylib key codes for modifiers are usually > 340
+            if (key != 0 && key != KEY_ENTER && key < 340)
             {
                 first_key_press = true;
 
@@ -179,8 +185,9 @@ int main(int argc, char *argv[])
                     index--;
                     letter_colors[index] = WHITE;
                 }
-                else
+                else if (key != KEY_BACKSPACE)
                 {
+                    total_keypresses++;
                     int letter_key = (int)toupper(letters[index][0]);
 
                     if (key == letter_key)
@@ -202,6 +209,7 @@ int main(int argc, char *argv[])
                     {
                         letter_colors[index] = RED;
                         PlaySound(key_wrong);
+                        mistakes++;
                     }
                     index++;
                 }
@@ -268,7 +276,23 @@ int main(int argc, char *argv[])
             // DrawTextEx(fontTtf, msg, (Vector2){20.0f, 100.0f}, (float)fontTtf.baseSize, 2, LIME);
             // DrawText("Using TTF font generated", 20, GetScreenHeight() - 30, 20, GRAY);
 
-            DrawText(TextFormat("Time: %.2f s", elapsed_time), 400 - 150, 10, 20, WHITE);
+            DrawText(TextFormat("Time: %.2f s", elapsed_time), 400 - 200, 10, 20, WHITE);
+
+            // Calculate live stats
+            float wpm = 0.0f;
+            if (elapsed_time > 0)
+            {
+                wpm = (index / 5.0f) / (elapsed_time / 60.0f);
+            }
+
+            float accuracy = 100.0f;
+            if (total_keypresses > 0)
+            {
+                accuracy = 100.0f * (float)(total_keypresses - mistakes) / (float)total_keypresses;
+            }
+
+            DrawText(TextFormat("WPM: %.1f", wpm), 400 - 50, 10, 20, WHITE);
+            DrawText(TextFormat("Acc: %.1f%%", accuracy), 400 + 100, 10, 20, WHITE);
 
             // check if all the letters are green
             for (int i = 0; i < letters.size(); i++)
@@ -281,27 +305,9 @@ int main(int argc, char *argv[])
                 {
                     first_key_press = false;
 
-                    float wpm = (float)num_words / (elapsed_time / 60.0f);
-                    DrawText(TextFormat("WPM: %.2f s", wpm), 400 - 150, 30, 20, WHITE);
+                    // Final stats display
+                    DrawText("FINISHED!", 400 - 50, 40, 30, GREEN);
                 }
-            }
-
-            // Draw the WPM when all letters are green
-            bool all_green = true;
-            for (int i = 0; i < letters.size(); i++)
-            {
-                if (!ColorsEqual(letter_colors[i], GREEN))
-                {
-                    all_green = false;
-                    break;
-                }
-            }
-
-            if (all_green)
-            {
-                first_key_press = false;
-                float wpm = (float)num_words / (elapsed_time / 60.0f);
-                DrawText(TextFormat("WPM: %.2f", wpm), 400 - 150, 30, 20, WHITE);
             }
 
             ClearBackground((Color){30, 30, 30, UINT8_MAX});

@@ -40,3 +40,17 @@ A typing speed test game made with raylib.
 
 - Type the displayed text
 - Press Enter to restart the test
+
+## Building with Docker
+
+You can build the project in a clean, isolated Linux environment using Docker. This creates a Linux executable.
+
+1.  **Ensure Docker is running**
+2.  **Run the build script:**
+    ```bash
+    ./build_docker.sh
+    ```
+3.  **Run the output:**
+    The binary will be placed in the current directory.
+    Run it with `./jankeytype`.
+    _(Note: This is a Linux binary. To run it on Windows, you will need WSL)_

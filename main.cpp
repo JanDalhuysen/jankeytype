@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
             DrawText(TextFormat("Acc: %.1f%%", accuracy), 400 + 100, 10, 20, WHITE);
 
             // Draw Autocorrect status
-            DrawText(TextFormat("Autocorrect (F1): %s", autocorrect ? "ON" : "OFF"), 10, 10, 20,
+            DrawText(TextFormat("Autocorrect (F1): %s", autocorrect ? "ON" : "OFF"), 10, 50, 20,
                      autocorrect ? GREEN : RED);
 
             // check if all the letters are green

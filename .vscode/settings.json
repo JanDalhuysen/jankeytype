@@ -1,3 +1,7 @@
 {
-    "cmake.buildDirectory": "${workspaceFolder}"
+  "cmake.configureOnOpen": false,
+  "cmake.configureOnEdit": false,
+  "cmake.additionalCompilerSearchDirs": ["C:\\w64devkit\\bin"],
+  "cmake.preferredGenerators": ["MinGW Makefiles"],
+  "cmake.buildDirectory": "${workspaceFolder}"
 }

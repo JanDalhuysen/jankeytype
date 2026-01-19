@@ -1,2 +1,1 @@
 The partial sums of a power series are polynomials, the partial sums of the Taylor series of an analytic function are a sequence of converging polynomial approximations to the function at the center, and a converging power series can be seen as a kind of generalized polynomial with infinitely many terms. Conversely, every polynomial is a power series with only finitely many non-zero terms.
-

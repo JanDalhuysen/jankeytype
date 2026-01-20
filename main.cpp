@@ -192,6 +192,10 @@ int main(int argc, char *argv[])
     int mistakes = 0;
     int total_keypresses = 0;
 
+    // Blink the caret highlight for the next expected character
+    float caret_timer = 0.0f;
+    bool caret_visible = true;
+
     // Autocorrect variables
     bool autocorrect = false;
     std::string user_word_buffer = "";
@@ -205,6 +209,13 @@ int main(int argc, char *argv[])
         char fps[8];
         sprintf(fps, "%d", GetFPS());
         SetWindowTitle(fps);
+
+        caret_timer += dt;
+        if (caret_timer >= 0.5f)
+        {
+            caret_visible = !caret_visible;
+            caret_timer = 0.0f;
+        }
 
         if (first_key_press)
         {
@@ -433,9 +444,19 @@ int main(int argc, char *argv[])
                 // Draw the word character by character
                 for (int k = i; k < word_end; k++)
                 {
+                    Vector2 char_size = MeasureTextEx(fontTtf, letters[k].c_str(), (float)fontTtf.baseSize, 2);
+
+                    if (k == index && caret_visible)
+                    {
+                        float pad = 4.0f;
+                        DrawRectangleRounded(
+                            (Rectangle){x - pad * 0.5f, y - pad * 0.5f, char_size.x + pad, char_size.y + pad}, 0.25f, 8,
+                            (Color){60, 70, 110, 160});
+                    }
+
                     DrawTextEx(fontTtf, letters[k].c_str(), (Vector2){x, y}, (float)fontTtf.baseSize, 2,
                                letter_colors[k]);
-                    x += MeasureTextEx(fontTtf, letters[k].c_str(), (float)fontTtf.baseSize, 2).x;
+                    x += char_size.x;
                 }
 
                 // Move to the next word
@@ -451,6 +472,15 @@ int main(int argc, char *argv[])
                     }
                     else if (letters[i] == " ")
                     {
+                        if (i == index && caret_visible)
+                        {
+                            Vector2 space_size = MeasureTextEx(fontTtf, " ", (float)fontTtf.baseSize, 2);
+                            float pad = 4.0f;
+                            DrawRectangleRounded(
+                                (Rectangle){x - pad * 0.5f, y - pad * 0.5f, space_size.x + pad, space_size.y + pad},
+                                0.25f, 8, (Color){60, 70, 110, 160});
+                        }
+
                         DrawTextEx(fontTtf, " ", (Vector2){x, y}, (float)fontTtf.baseSize, 2, letter_colors[i]);
                         x += MeasureTextEx(fontTtf, " ", (float)fontTtf.baseSize, 2).x;
                     }
